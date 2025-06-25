@@ -1,19 +1,19 @@
 .data
-	#ler arquivo
-	# tem que usar caminho absoluto, se nao essa joca n�o funciona
-	ArquivoLocal: .asciiz "/home/karina/Documentos/mars/epOac/ArquivoLeitura.txt"
-	ConteudoArquivo: .space 1024 # espa�o para ler
+	# ler arquivo
+	# tem que usar caminho absoluto, se nao essa joca nao funciona
+	ArquivoLocal: .asciiz "/home/karina/Documentos/mars/EP-OAC/epOac/ArquivoLeitura.txt"
+	ConteudoArquivo: .space 1024 # espaco para ler
 	ErroAbrir: .asciiz "Erro: arquivo nao encontrado ;("
 	
 
-	##lw l� o conteudo da RAM e coloca na CPU
-	##sw escreve o conteudo de um registrador da CPU na RAM
+	## lw le o conteudo da RAM e coloca na CPU
+	## sw escreve o conteudo de um registrador da CPU na RAM
 	
-	##Bubble sort
-	.align 2   # for�a alinhamento para palavras 2^2 (4 bytes)
+	##BUBBLE SORT
+	.align 2   # forca alinhamento para palavras 2^2 (4 bytes)
 	Vetor: .space 400 # vetor para 100 floats de 400 bytes
 	TamVetor: .word 0 # tam do vetor que vai ser preenchido
-	Espaco: .asciiz " " # espa�o para separar os n�meros na impress�o
+	Espaco: .asciiz " " # espaco para separar os numeros na impressao
 	
 .text	
 	# abrir arquivo
@@ -207,13 +207,13 @@
 	li $v0, 2 # imprime float
 	syscall
     
-	# Imprime espa�o
+	# Imprime espaco
 	li $v0, 4
 	la $a0, Espaco
 	syscall
     
-	addi $t0, $t0, 4 # avan�a para pr�ximo elemento
-	addi $t2, $t2, 1 # incrementa contador em 1
+	addi $t0, $t0, 4 # avanca para proximo elemento
+	addi $t2, $t2, 1 # incrementa o contador em 1
 	j loopImpressao
 	
     FecharArquivo:
@@ -223,6 +223,6 @@
 	syscall
 	
     fim:
-    	# encerra
+    	# encerra o programa
 	li $v0, 10
 	syscall
