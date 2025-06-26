@@ -1,8 +1,11 @@
+![Clodoaldo](clodo.png)
 # Clodocumentação
 - [Clodocumentação](#clodocumentação)
   - [📝 Resumo](#-resumo)
   - [🎯 Proposta](#-proposta)
 - [🫧 BUBBLE SORT](#-bubble-sort)
+  - [📦 `.data`](#-data)
+  - [.text](#text)
 - [🏃 QUICK SORT](#-quick-sort)
 
 ## 📝 Resumo
@@ -13,6 +16,23 @@ A proposta deste trabalho é implemntar um algritmo Bubble Sort e um Quick Sort 
 Aplicamos os conceitos da linguagem Assembly abordados em sala de aula, como o uso de registradores, instruções, leitura de arquivos, manipulação de loops e vetores nesse trabalho. Para a execução e testes dos programas, será utilizado o simulador MARS, voltado para a arquitetura MIPS.
 
 Com o objetivo de facilitar o desenvolvimento, os algoritmos de ordenação serão inicialmente implementados em uma linguagem de alto nível (C) e, posteriormente, traduzidos para Assembly MIPS.
-  
+
 # 🫧 BUBBLE SORT
+
+## 📦 `.data`
+Nesta parte, definimos as variáveis que serão utilizadas ao longo do nosso algoritmo. Segue tabela abaixo com a lista das variáveis e sua descrição:
+
+| Variável|Descrição|
+|--------------------|----------------------------------------------------------------|
+| **ArquivoLocal**   | Caminho absoluto do arquivo a ser lido.                        |
+| **ConteudoArquivo**| Espaço de 1024 bytes para armazenar os dados.            |
+| **ErroAbrir**      | Mensagem de erro exibida caso o arquivo não seja encontrado.      |
+| **Vetor**          | Espaço de 400 bytes (100 floats de 4 bytes cada).              |
+| **TamVetor**       | Armazenar a quantidade de números lidos do arquivo.             |
+| **Espaco**| Caractere de espaço usado para separar os números no momento da impressão.|
+
+
+## .text
+
+
 # 🏃 QUICK SORT

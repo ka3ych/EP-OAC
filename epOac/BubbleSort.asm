@@ -23,10 +23,11 @@
 	syscall # descritor do arquivo vai para $v0
 	move $s0, $v0 #copia do descritor
 	
-	# apois abrir arquivo vai continuar se tudo ok e vai dar erro se der problema
+	# apos abrir arquivo vai continuar se tudo ok e vai dar erro se der problema
+	# bgez = branch greater than and or equal to zero => caso o registrador $s0 >= 0 então significa que o arquivo foi aberto corretamente. Nesse caso, vai pular para o rótulo AbriuCerto
 	bgez $s0, AbriuCerto
 	la $a0, ErroAbrir
-	li $v0, 4
+	li $v0, 4 # impressão da mensagem de arquivo não encontrado
 	syscall
 	j FecharArquivo
 
@@ -42,19 +43,17 @@
 	la $t0, ConteudoArquivo
 	add $t0, $t0, $v0 # posicao final
 	sb $zero, 0($t0) # armazena 0 no final
-	
-	
 
 	# converter de string para float
-	la $s1, ConteudoArquivo  # endere�o do conte�do
-	la $s2, Vetor            # endere�o do vetor
-	li $s3, 0                # contador de n�meros (tam)
+	la $s1, ConteudoArquivo  # endereco do conteudo
+	la $s2, Vetor            # endereco do vetor
+	li $s3, 0                # contador de numeros (tam)
 	
     loopConversao:
 	lb $t5, 0($s1)        # carrega caractere
 	beqz $t5, fimConversao # termina se null
 		
-	# Ignora espa�os/quebras
+	# Ignora espacos/quebras
 	li $t6, ' '
 	beq $t5, $t6, avanca
 	li $t6, '\n'
@@ -64,7 +63,7 @@
 	li $t6, '\t'
 	beq $t5, $t6, avanca
 		
-	# Processa n�mero
+	# Processa numero
 	li $t7, 0 # sinal (1=negativo)
 	li $t8, 0 # parte inteira
 	li $t9, 0 # parte decimal
@@ -74,7 +73,7 @@
 	# Verifica sinal
 	bne $t5, '-', positivo
 	li $t7, 1             # marca negativo
-	addi $s1, $s1, 1      # avan�a caractere
+	addi $s1, $s1, 1      # avanca caractere
 	lb $t5, 0($s1)
 	
     positivo:
@@ -155,7 +154,7 @@
 	sw $s3, TamVetor        # atualiza tamanho
 	
 	# bubblesort
-	la $t0, Vetor # carrega endere�o base do vetor
+	la $t0, Vetor # carrega endereco base do vetor
 	lw $t1, TamVetor # carrega tamanho do vetor
 	
 	li $t2, 0 # inicializa contador (i = 0)
@@ -178,7 +177,7 @@
 	
 	# para pular a troca caso necessario
 	c.lt.s $f1, $f0 # compare if $f1 p� less than $f0 com precisao simples if (arr[j] > arr[j+1]) (f1 < f0)
-	bc1f semTroca # se condi��o falsa, n�o troca
+	bc1f semTroca # se condicao falsa, nao troca
     
 	# fazer a troca
 	swc1 $f1, 0($t5) # armazena o valor de arr[j+1] na atual arr [j] (arr[j] = arr[j+1])
