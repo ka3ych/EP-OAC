@@ -1,0 +1,22 @@
+flowchart TD
+  main --> le_loop
+  le_loop -->|"se '\n'"| incrementa_linha
+  le_loop --> verifica_ultima_linha
+  verifica_ultima_linha --> fim_arq
+  fim_arq --> le_nums
+  le_nums --> ler_linha
+  ler_linha --> str_para_float
+  str_para_float --> chamar_ordena
+  chamar_ordena --> ordena
+  ordena -->|"tipo_ord = 1"| usa_bubble_sort
+  usa_bubble_sort --> ordena_bubble
+  ordena_bubble --> loop_externo
+  loop_externo --> loop_interno
+  loop_interno -->|"compara e troca"| loop_interno
+  loop_interno --> fim_loop_interno
+  fim_loop_interno --> fim_bubble
+  fim_bubble --> fim_ordena
+  fim_ordena --> imprimir
+  imprimir --> printa_loop
+  printa_loop --> float_para_str
+  float_para_str --> fim_printa
