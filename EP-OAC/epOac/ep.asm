@@ -1,5 +1,5 @@
 .data
-    arq_nome:     .asciiz "C:/Users/isacm/Downloads/ALAN/EP-OAC/epOac/10numeros.txt"
+    arq_nome:     .asciiz "C:/Users/isacm/Downloads/ALAN/EP-OAC/epOac/Arquivos_de_numero/10numeros.txt"
     msg_ord:      .asciiz "\n\nELEMENTOS ORDENADOS\n\n"
     newline:      .asciiz "\n"
     
@@ -16,9 +16,6 @@
 .globl main
 
 main:
-    li $v0, 34	#tempo
-    syscall
-    add $s5, $v0, $zero
 
     # Abre arquivo para leitura
     li $v0, 13              
@@ -141,7 +138,7 @@ printa_loop:
     add $t3, $s2, $t2
     l.s $f12, 0($t3)
 
-    # Converte float para string
+    # Converte float para string - VERSÃO SIMPLIFICADA
     la $a0, linha_buf
     
     # Limpa buffer primeiro
@@ -153,8 +150,8 @@ limpa_buffer:
     li $s6, 32
     bne $t8, $s6, limpa_buffer
     
-    # Chama conversão SEM CVT
-    jal float_para_str
+    # Chama conversão
+    jal float_para_str_simples
     
     # Calcula tamanho manualmente para evitar erro
     la $t4, linha_buf
@@ -196,18 +193,9 @@ fecha_arquivo:
     li $v0, 16
     add $a0, $s4, $zero
     syscall
-    j fim_programa
+    j fim
 
-fim_programa:
-    li $v0, 34	#tempo
-    syscall
-    add $s6, $v0, $zero
-    sub $t0, $s6, $s5
-    li $v0, 1
-    add $a0, $t0, $zero
-    syscall
-
-
+fim:
     li $v0, 10
     syscall
 
@@ -436,7 +424,7 @@ fim_particiona:
     addi $sp, $sp, 24
     jr $ra
 
-# Função para ler uma linha do arquivo
+# Função corrigida para ler uma linha do arquivo
 ler_linha:
     la $t0, linha_buf
     li $t1, 0
@@ -576,13 +564,13 @@ aplica_sinal:
     li $t7, -1
     bne $t4, $t7, fim_str_float
     l.s $f1, flt_zero
-    sub.s $f0, $f1, $f0    # Corrigido: $f0 = 0.0 - $f0
+    sub.s $f0, $f1, $f0
     
 fim_str_float:
     jr $ra
 
 # Função float_para_str SEM cvt.s.w e cvt.w.s
-float_para_str:
+float_para_str_sem_cvt:
     addi $sp, $sp, -32
     sw $ra, 28($sp)
     sw $t0, 24($sp)
@@ -596,13 +584,13 @@ float_para_str:
     # Verifica se é negativo
     l.s $f0, flt_zero
     c.lt.s $f12, $f0
-    bc1f positivo
+    bc1f positivo_sem_cvt
     li $t0, 45             # '-'
     sb $t0, 0($a0)
     addi $a0, $a0, 1
     sub.s $f12, $f0, $f12
     
-positivo:
+positivo_sem_cvt:
     # MÉTODO: Multiplicar por 100000, truncar usando subtrações e depois dividir
     l.s $f1, flt_dec       # 100000.0
     mul.s $f2, $f12, $f1   # número × 100000
@@ -611,14 +599,14 @@ positivo:
     li $t1, 0              # será nosso "inteiro truncado"
     l.s $f3, flt_um        # 1.0
     
-truncar_loop:
+truncar_loop_sem_cvt:
     c.lt.s $f2, $f3        # se número < 1.0, terminou
-    bc1t fim_truncar
+    bc1t fim_truncar_sem_cvt
     sub.s $f2, $f2, $f3    # número = número - 1.0
     addi $t1, $t1, 1       # incrementa inteiro
-    j truncar_loop
+    j truncar_loop_sem_cvt
     
-fim_truncar:
+fim_truncar_sem_cvt:
     # Agora $t1 contém (número_original × 100000) truncado
     # Dividir por 100000 para separar parte inteira e decimal
     
@@ -629,9 +617,9 @@ fim_truncar:
     
     # Converte parte inteira
     add $t5, $zero, $a0    # salva posição inicial
-    beq $t3, $zero, zero_inteiro
+    beq $t3, $zero, zero_inteiro_sem_cvt
     
-conv_int:
+conv_int_sem_cvt:
     li $t6, 10
     div $t3, $t6
     mfhi $t7               # dígito
@@ -639,23 +627,23 @@ conv_int:
     addi $t7, $t7, 48      # converte para ASCII
     sb $t7, 0($a0)
     addi $a0, $a0, 1
-    bne $t3, $zero, conv_int
-    j inverter
+    bne $t3, $zero, conv_int_sem_cvt
+    j inverter_sem_cvt
     
-zero_inteiro:
+zero_inteiro_sem_cvt:
     li $t7, 48             # '0'
     sb $t7, 0($a0)
     addi $a0, $a0, 1
     
-inverter:
+inverter_sem_cvt:
     # Inverte a parte inteira
     sub $t6, $a0, $t5
     addi $t6, $t6, -1
     add $t3, $zero, $t6
     
-inv_loop:
+inv_loop_sem_cvt:
     slt $at, $zero, $t3
-    beq $at, $zero, decimal
+    beq $at, $zero, decimal_sem_cvt
     lb $t7, 0($t5)
     lb $t1, -1($a0)
     sb $t1, 0($t5)
@@ -663,25 +651,25 @@ inv_loop:
     addi $t5, $t5, 1
     addi $a0, $a0, -1
     addi $t3, $t3, -2
-    j inv_loop
+    j inv_loop_sem_cvt
     
-decimal:
+decimal_sem_cvt:
     # Processa parte decimal se não for zero
-    beq $t4, $zero, fim_float_para_str
+    beq $t4, $zero, fim_sem_cvt
     
     # Remove zeros à direita
     li $t6, 5              # máximo 5 dígitos decimais
-remove_zeros:
+remove_zeros_sem_cvt:
     li $t7, 10
     div $t4, $t7
     mfhi $t1               # resto
-    bne $t1, $zero, escrever_decimais # se resto != 0, para de remover
+    bne $t1, $zero, escrever_decimais_sem_cvt # se resto != 0, para de remover
     mflo $t4               # quociente
     addi $t6, $t6, -1      # diminui contador
-    bne $t6, $zero, remove_zeros
+    bne $t6, $zero, remove_zeros_sem_cvt
     
-escrever_decimais:
-    beq $t6, $zero, fim_float_para_str
+escrever_decimais_sem_cvt:
+    beq $t6, $zero, fim_sem_cvt
     
     li $t0, 46             # '.'
     sb $t0, 0($a0)
@@ -690,21 +678,21 @@ escrever_decimais:
     # Calcula divisor apropriado baseado no número de dígitos
     li $t7, 1
     add $t1, $t6, $zero
-calc_divisor:
-    beq $t1, $zero, escrever_digs
+calc_divisor_sem_cvt:
+    beq $t1, $zero, escrever_digs_sem_cvt
     li $t0, 10
     mult $t7, $t0
     mflo $t7
     addi $t1, $t1, -1
-    j calc_divisor
+    j calc_divisor_sem_cvt
     
-escrever_digs:
+escrever_digs_sem_cvt:
     li $t0, 10
     div $t7, $t0           # ajusta divisor
     mflo $t7
     
-loop_dig:
-    beq $t6, $zero, fim_float_para_str
+loop_dig_sem_cvt:
+    beq $t6, $zero, fim_sem_cvt
     div $t4, $t7
     mflo $t1               # dígito
     mfhi $t4               # resto
@@ -716,11 +704,181 @@ loop_dig:
     div $t7, $t0
     mflo $t7               # próximo divisor
     addi $t6, $t6, -1
-    j loop_dig
+    j loop_dig_sem_cvt
     
-fim_float_para_str:
+fim_sem_cvt:
     li $t0, 0
     sb $t0, 0($a0)         # terminador nulo
+    
+    lw $t6, 0($sp)
+    lw $t5, 4($sp)
+    lw $t4, 8($sp)
+    lw $t3, 12($sp)
+    lw $t2, 16($sp)
+    lw $t1, 20($sp)
+    lw $t0, 24($sp)
+    lw $ra, 28($sp)
+    addi $sp, $sp, 32
+    jr $ra
+
+# Função float_para_str - VERSÃO HÍBRIDA (funcional + sem cvt)
+float_para_str_simples:
+    addi $sp, $sp, -32
+    sw $ra, 28($sp)
+    sw $t0, 24($sp)
+    sw $t1, 20($sp)
+    sw $t2, 16($sp)
+    sw $t3, 12($sp)
+    sw $t4, 8($sp)
+    sw $t5, 4($sp)
+    sw $t6, 0($sp)
+    
+    # Verifica se é negativo
+    l.s $f0, flt_zero
+    c.lt.s $f12, $f0
+    bc1f positivo_hibrido
+    li $t0, 45             # '-'
+    sb $t0, 0($a0)
+    addi $a0, $a0, 1
+    sub.s $f12, $f0, $f12
+    
+positivo_hibrido:
+    # USAR O MÉTODO ORIGINAL MAS SUBSTITUIR CVT POR OPERAÇÕES MANUAIS
+    
+    # Separar parte inteira usando truncamento manual
+    add.s $f1, $f12, $f0   # f1 = número original
+    
+    # Extrair parte inteira por subtrações de 1.0
+    li $t1, 0              # contador da parte inteira
+    l.s $f2, flt_um        # 1.0
+    
+extrair_inteira_hibrido:
+    c.lt.s $f1, $f2        # se número < 1.0, terminou
+    bc1t calcular_decimal_hibrido
+    sub.s $f1, $f1, $f2    # número = número - 1.0
+    addi $t1, $t1, 1       # incrementa parte inteira
+    j extrair_inteira_hibrido
+    
+calcular_decimal_hibrido:
+    # $t1 = parte inteira, $f1 = parte decimal
+    
+    # Reconstroi a parte inteira como float usando somas
+    l.s $f3, flt_zero      # começar com 0.0
+    l.s $f4, flt_um        # 1.0 para somar
+    add $t0, $t1, $zero    # copia parte inteira
+    
+reconstruir_float_hibrido:
+    beq $t0, $zero, subtrair_decimal_hibrido
+    add.s $f3, $f3, $f4    # adiciona 1.0
+    addi $t0, $t0, -1
+    j reconstruir_float_hibrido
+    
+subtrair_decimal_hibrido:
+    # $f3 agora tem a parte inteira como float
+    sub.s $f2, $f12, $f3   # f2 = parte decimal precisa
+    
+    # Multiplica parte decimal por 100000
+    l.s $f5, flt_dec       # 100000.0
+    mul.s $f2, $f2, $f5    # decimal × 100000
+    
+    # Extrai como inteiro usando subtrações
+    li $t2, 0
+    l.s $f6, flt_um
+    
+extrair_decimal_int_hibrido:
+    c.lt.s $f2, $f6
+    bc1t processar_numeros_hibrido
+    sub.s $f2, $f2, $f6
+    addi $t2, $t2, 1
+    j extrair_decimal_int_hibrido
+    
+processar_numeros_hibrido:
+    # Agora temos: $t1 = parte inteira, $t2 = parte decimal × 100000
+    
+    add $t3, $zero, $a0    # salva posição inicial
+    beq $t1, $zero, escrever_zero_hibrido
+    
+# Converte parte inteira normalmente
+conv_int_hibrido:
+    li $t4, 10
+    div $t1, $t4
+    mfhi $t5               # dígito
+    mflo $t1               # resto
+    addi $t5, $t5, 48      # ASCII
+    sb $t5, 0($a0)
+    addi $a0, $a0, 1
+    bne $t1, $zero, conv_int_hibrido
+    j inverter_hibrido
+    
+escrever_zero_hibrido:
+    li $t5, 48             # '0'
+    sb $t5, 0($a0)
+    addi $a0, $a0, 1
+    
+# Inverte parte inteira
+inverter_hibrido:
+    sub $t6, $a0, $t3
+    addi $t6, $t6, -1
+    add $t4, $zero, $t6
+    
+inv_loop_hibrido:
+    slt $at, $zero, $t4
+    beq $at, $zero, decimal_hibrido
+    lb $t5, 0($t3)
+    lb $t1, -1($a0)
+    sb $t1, 0($t3)
+    sb $t5, -1($a0)
+    addi $t3, $t3, 1
+    addi $a0, $a0, -1
+    addi $t4, $t4, -2
+    j inv_loop_hibrido
+
+# Processa parte decimal
+decimal_hibrido:
+    beq $t2, $zero, fim_hibrido
+    
+    li $t0, 46             # '.'
+    sb $t0, 0($a0)
+    addi $a0, $a0, 1
+    
+    add $t6, $zero, $t2
+    li $t4, 10000
+    li $t7, 5
+    
+# Remove zeros à direita
+remove_zeros_hibrido:
+    li $t5, 10
+    div $t6, $t5
+    mfhi $t1                     
+    bne $t1, $zero, escrever_decimais_hibrido
+    mflo $t6    
+    div $t4, $t5
+    mflo $t4
+    addi $t7, $t7, -1
+    slt $at, $zero, $t7
+    bne $at, $zero, remove_zeros_hibrido
+    
+escrever_decimais_hibrido:
+    beq $t7, $zero, fim_hibrido
+    
+loop_decimais_hibrido:
+    div $t6, $t4
+    mflo $t1
+    mfhi $t6
+    addi $t1, $t1, 48
+    sb $t1, 0($a0)
+    addi $a0, $a0, 1
+    
+    li $t5, 10
+    div $t4, $t5
+    mflo $t4
+    addi $t7, $t7, -1
+    slt $at, $zero, $t7
+    bne $at, $zero, loop_decimais_hibrido
+    
+fim_hibrido:
+    li $t0, 0
+    sb $t0, 0($a0)
     
     lw $t6, 0($sp)
     lw $t5, 4($sp)

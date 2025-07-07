@@ -25,7 +25,7 @@ def generate_random_numbers(n):
 
 # Configuração
 random.seed(42)  # Garante reprodutibilidade
-sizes = [10, 100, 10000]    # 1000 numeros fornecido pelo professor
+sizes = [10, 100, 2000]    # 1000 numeros fornecido pelo professor
 
 # Gera arquivos
 for size in sizes:
