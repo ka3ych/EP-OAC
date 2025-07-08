@@ -1,38 +1,69 @@
-![Clodoaldo](clodo.png)
-# Clodocumentação
-- [Clodocumentação](#clodocumentação)
-  - [📝 Resumo](#-resumo)
-  - [🎯 Proposta](#-proposta)
-- [🫧 BUBBLE SORT](#-bubble-sort)
-  - [📦 `.data`](#-data)
-  - [.text](#text)
-- [🏃 QUICK SORT](#-quick-sort)
+# Ordenação em Assembly MIPS
 
-## 📝 Resumo
-Este relatório referente ao segundo Exercício Programa de OAC I apresenta a implementação de dois algoritmos de ordenação — Bubble Sort e Quick Sort — utilizando a linguagem Assembly. O exercício tem como foco a comparação de desempenho entre os algoritmos por meio de testes práticos, cuja análise é apresentada através de um gráfico ilustrativo.
-## 🎯 Proposta
-A proposta deste trabalho é implemntar um algritmo Bubble Sort e um Quick Sort para ordenar o seguinte vetor armazenado em um aqrquivo: 3.0, 2.1, 6.7, 8.7, 9.7, 10.7, 4.0, 7.5, 12.5, 15.5 .
+Este projeto implementa Bubble Sort e Quick Sort em Assembly MIPS, utilizando o simulador MARS. Os dados são lidos de arquivos de texto e o resultado ordenado é salvo no mesmo arquivo.
 
-Aplicamos os conceitos da linguagem Assembly abordados em sala de aula, como o uso de registradores, instruções, leitura de arquivos, manipulação de loops e vetores nesse trabalho. Para a execução e testes dos programas, será utilizado o simulador MARS, voltado para a arquitetura MIPS.
+## Como usar
+1. Gere arquivos de teste executando o script Python:
+   ```bash
+   python EP-OAC/EP-OAC/epOac/Arquivos_de_numero/geracao_numeros.py
+   ```
+2. No início do arquivo `ep.asm`, configure:
+   - O caminho do arquivo de entrada:
+     ```assembly
+     arq_nome: .asciiz "CAMINHO/DO/ARQUIVO.txt"
+     ```
+   - O tipo de ordenação:
+     ```assembly
+     tipo_ord: .word 1  # 1 = Bubble Sort, 2 = Quick Sort
+     ```
+3. Abra o `ep.asm` no MARS e execute (Run). O arquivo será sobrescrito com os números ordenados.
 
-Com o objetivo de facilitar o desenvolvimento, os algoritmos de ordenação serão inicialmente implementados em uma linguagem de alto nível (C) e, posteriormente, traduzidos para Assembly MIPS.
+## Estrutura
+- `geracao_numeros.py`: Gera arquivos de números aleatórios.
+- `ep.asm`: Código Assembly para ordenação.
+- Arquivos `.txt`: Entradas de teste.
 
-# 🫧 BUBBLE SORT
+## Procedimentos do código Assembly
 
-## 📦 `.data`
-Nesta parte, definimos as variáveis que serão utilizadas ao longo do nosso algoritmo. Segue tabela abaixo com a lista das variáveis e sua descrição:
+- **Abertura do arquivo**: Abre o arquivo de entrada definido em `arq_nome` para leitura dos números.
 
-| Variável|Descrição|
-|--------------------|----------------------------------------------------------------|
-| **ArquivoLocal**   | Caminho absoluto do arquivo a ser lido.                        |
-| **ConteudoArquivo**| Espaço de 1024 bytes para armazenar os dados.            |
-| **ErroAbrir**      | Mensagem de erro exibida caso o arquivo não seja encontrado.      |
-| **Vetor**          | Espaço de 400 bytes (100 floats de 4 bytes cada).              |
-| **TamVetor**       | Armazenar a quantidade de números lidos do arquivo.             |
-| **Espaco**| Caractere de espaço usado para separar os números no momento da impressão.|
+- **Contagem de linhas**: Lê o arquivo linha por linha para contar quantos números existem (cada linha = 1 número).
 
+- **Alocação de memória**: Reserva espaço na memória para armazenar todos os números lidos do arquivo.
 
-## .text
+- **Leitura dos números**: Lê cada linha do arquivo, converte de string para float e armazena no array em memória.
 
+- **Chamada da ordenação**: Chama a função de ordenação escolhida (Bubble Sort ou Quick Sort), de acordo com o valor em `tipo_ord`.
 
-# 🏃 QUICK SORT
+- **Impressão/Salvamento**: Abre o arquivo novamente, agora para escrita, e salva os números já ordenados, sobrescrevendo o arquivo original.
+
+- **Finalização**: Fecha o arquivo e encerra o programa.
+
+## Gráficos de Fluxo
+### Bubble Sort
+![Fluxograma Bubble](Fluxos%20de%20execu%C3%A7%C3%A3o/BubbleSort/Fluxograma%20Bubble.png)
+
+### Quick Sort
+![Fluxograma QuickSort](Fluxos%20de%20execu%C3%A7%C3%A3o/QuickSort/Fluxograma%20QuickSort.png)
+
+## Gráfico de Tempo de Execução
+![Gráfico de Tempo](Dados/Gráfico.png)
+
+## Pontos de Melhoria
+- **Evitar múltiplas leituras do arquivo**: Unificar a contagem de linhas e a leitura dos números em um único loop para reduzir I/O.
+
+- **Otimizar Bubble Sort**: Implementar verificação de troca para parar o algoritmo caso o array já esteja ordenado antes do fim.
+
+- **Otimizar Quick Sort**: Usar técnicas como escolha de pivô mais eficiente (mediana de três) e limitar recursão para subarrays pequenos.
+
+- **Reduzir uso de syscalls**: Minimizar chamadas de sistema, principalmente para leitura e escrita, usando buffers maiores.
+
+- **Evitar conversões desnecessárias**: Manter os dados em formato float durante todo o processamento, convertendo para string apenas na escrita final.
+
+- **Comentar e modularizar mais**: Separar funções e adicionar comentários para facilitar futuras otimizações e manutenção.
+
+- **Permitir escolher o arquivo e o modo de ordenação via entrada do usuário**, não só editando o código.
+
+- **Implementar tratamento de erros** para arquivos inexistentes ou mal formatados.
+
+- **Adicionar opção para salvar o resultado em um novo arquivo**, preservando o original.
