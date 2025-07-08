@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Geração de números de entrada para os códigos de algoritmos de ordenação
-"""
-
 import random
 
 def generate_random_numbers(n):
@@ -12,23 +7,20 @@ def generate_random_numbers(n):
     """
     numbers = []
     for _ in range(n):
-        # Gera número positivo entre 1 (inclusive) e 10 (exclusive)
-        num = random.uniform(1, 10 - 1e-9)  # Evita arredondamento para 10.0
+        num = random.uniform(1, 10 - 1e-9)
         
-        # Escolhe sinal aleatório (positivo ou negativo)
         if random.choice([True, False]):
             num = -num
         
-        # Formata para 5 casas decimais
         numbers.append(f"{num:.5f}")
     return numbers
 
 # Configuração
-random.seed(42)  # Garante reprodutibilidade
-sizes = [10, 100, 2000]    # 1000 numeros fornecido pelo professor
+random.seed(42)
+sizes = [10, 50, 100, 1000]
 
 # Gera arquivos
 for size in sizes:
     data = generate_random_numbers(size)
-    with open(f"{size}numeros.txt", "w") as f:
+    with open(f"{size}numeros.txt", "w", encoding="utf-8") as f:
         f.write("\n".join(data))

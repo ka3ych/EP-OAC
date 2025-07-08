@@ -90,7 +90,6 @@ int main() {
     // Chama rotina de ordenacao
     nums = ordena(qtd, tipo_ord, nums);
 
-    // Escreve resultado no arquivo
     arq = fopen("numeros.txt", "a");
     fprintf(arq, "\n\nELEMENTOS ORDENADOS\n\n");
     
