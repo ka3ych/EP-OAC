@@ -41,10 +41,10 @@ Este projeto implementa Bubble Sort e Quick Sort em Assembly MIPS, utilizando o 
 
 ## Gráficos de Fluxo
 ### Bubble Sort
-![Fluxograma Bubble](Fluxos%20de%20execu%C3%A7%C3%A3o/BubbleSort/Fluxograma%20Bubble.png)
+![Fluxograma Bubble](Fluxos%20de%20execu%C3%A7%C3%A3o/BubbleSort/Fluxograma%20Bubble.svg)
 
 ### Quick Sort
-![Fluxograma QuickSort](Fluxos%20de%20execu%C3%A7%C3%A3o/QuickSort/Fluxograma%20QuickSort.png)
+![Fluxograma QuickSort](Fluxos%20de%20execu%C3%A7%C3%A3o/QuickSort/Fluxograma%20QuickSort.svg)
 
 ## Gráfico de Tempo de Execução
 ![Gráfico de Tempo](Dados/Gráfico.png)
