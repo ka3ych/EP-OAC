@@ -1,23 +1,23 @@
 import random
 
 def generate_random_numbers(n):
-    """
-    Gera 'n' números aleatórios no intervalo [1, 10) com sinal aleatório
-    e precisão de até 5 casas decimais.
-    """
     numbers = []
     for _ in range(n):
-        num = random.uniform(1, 10 - 1e-9)
+        # Gera numero positivo entre 1 (inclusive) e 10 (exclusive)
+        num = random.uniform(1, 10 - 1e-9)  
+        # ultima parte evita arredondamento para 10.0
         
+        # sinal positivo ou negativo
         if random.choice([True, False]):
             num = -num
         
+        # Formata para 5 casas decimais
         numbers.append(f"{num:.5f}")
     return numbers
 
-# Configuração
+# Configuracao
 random.seed(42)
-sizes = [10, 50, 100, 1000]
+sizes = [100, 1000, 10000]
 
 # Gera arquivos
 for size in sizes:
